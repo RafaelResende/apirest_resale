@@ -45,24 +45,25 @@ def inserir_imobiliaria():
         db_session.commit()
         return "ok"
 
-
-@app.route('/imobiliaria/editar', methods=['POST'])
-def editarr_imobiliaria():
-    data = request.form
-    if data:
-        imob = User.query.filter_by(username=username).all()
-        db_session.add(imob)
-        db_session.commit()
-
-@app.route('/imobiliaria/deletar', methods=['DELETE'])
-def deletar_imobiliaria():
-    data = request.form
-    if data:
-        imob = Imobiliaria(data['nome'], data['endereco'])
-        print (imob)
+@app.route('/imobiliaria/deletar/<int:imob_id>', methods=['DELETE'])
+def deletar_imobiliaria(imob_id):
+    imob = Imobiliaria.query.get(imob_id)
+    if imob:
         db_session.delete(imob)
         db_session.commit()
         return "delOK"
+
+@app.route('/imobiliaria/editar/<int:imob_id>', methods=['GET','POST'])
+def editar_imobiliaria(imob_id):
+    imob = Imobiliaria.query.get(imob_id)
+    data = request.form
+    if imob:
+        imob.nome = data['nome']
+        imob.endereco = data['endereco']
+        db_session.commit()
+        return "editOK"
+
+
 
 
 #crud imovel
