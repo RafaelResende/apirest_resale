@@ -75,17 +75,15 @@ def listar_imovels():
     return jsonify(imovels=imovels)
 
 
-@app.route('/imovel/listar/<int:imob_id>')
-def listar_imovel(imob_id):
-    imovel = Imovel.query.get(imob_id)
+@app.route('/imovel/listar/<int:imov_id>')
+def listar_imovel(imov_id):
+    imovel = Imovel.query.get(imov_id)
     if imovel is not None:
         return imovel.to_obj()
 
 @app.route('/imovel/inserir', methods=['POST'])
 def inserir_imovel():
-    print('oi1')
     data = request.form
-    print('oi2')
     if data:
         imov = Imovel(data['nome'], data['endereco'], data['descricao'], data['status'], data['caracteristica'], data['tipo'], data['finalidade'], data['imobiliaria'])
         db_session.add(imov)
@@ -93,28 +91,25 @@ def inserir_imovel():
         return "ok"
 
 
-@app.route('/imovel/selecionar', methods=['GET'])
-def selecionar_imovel():
+@app.route('/imovel/editar/<int:imov_id>', methods=['GET','POST'])
+def editar_imovel(imov_id):
+    imov = Imovel.query.get(imov_id)
     data = request.form
-    if data:
-        imob = User.query.filter_by(username=username).all()
-        return imob
-
-@app.route('/imovel/editar', methods=['POST'])
-def editarr_imovel():
-    data = request.form
-    if data:
-        imob = User.query.filter_by(username=username).all()
-        db_session.add(imob)
+    if imov:
+        imov.nome = data['nome']
+        imov.endereco = data['endereco']
         db_session.commit()
+        return "editOK"
 
-@app.route('/imovel/deletar', methods=['POST'])
-def deletar_imovel():
-    data = request.form
-    if data:
-        imob = Imovel(data['nome'], data['endereco'])
-        db_session.delete(imob)
+
+@app.route('/imovel/deletar/<int:imov_id>', methods=['DELETE'])
+def deletar_imovel(imov_id):
+    imov = Imovel.query.get(imov_id)
+    if imov:
+        db_session.delete(imov)
         db_session.commit()
+        return "delOK"
+
 
 
 @app.teardown_appcontext
