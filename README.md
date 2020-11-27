@@ -31,25 +31,40 @@ sudo pip3 install flask SQLAlchemy MySQLClient
 Use Python3 app.py
 At your localhost it is possible to access the routes.
 
-### Break down into end to end tests
+### Samples
 
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
+List of all 'imobiliarias'. Your information is collected from the insert and allocated to an object to return.
+Json is used for this return.
 
 ```
-Give an example
+#imobiliaria listar todos
+@app.route('/imobiliaria/listar')
+def listar_imobiliarias():
+    imobiliarias = Imobiliaria.query.all()
+    imobiliarias = [x.to_obj() for x in imobiliarias]
+    return jsonify(imobiliarias=imobiliarias)
 ```
 
-## Deployment
+### Samples
 
-Add additional notes about how to deploy this on a live system
+Def of 'Imobiliaria', and allocation of values ​​in an object
+
+```
+class Imobiliaria(Base):
+    __tablename__ = 'imobiliaria'
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(200), nullable=False)
+    endereco = Column(String(200))
+    imovel_rel = relationship("Imovel", lazy='selectin')    #enviando id imobiliaria para tabela imoveis
+
+    def __init__(self, nome=None, endereco=None):
+        self.nome = nome
+        self.endereco = endereco
+
+#definicao objeto imobiliaria
+    def to_obj(self):
+        return {'id': self.id, 'nome': self.nome, 'endereco': self.endereco}
+```
 
 ## Built With
 
@@ -63,3 +78,7 @@ Add additional notes about how to deploy this on a live system
 ## License
 
 This project was developed in order to join the company Resale and must not be reproduced by anyone other than the developer.
+
+## Acknowledgment
+
+I thank the entire Resale team that made the challenge available and Ana Carolina Buschinelli for informing me of the Job vacancy.
